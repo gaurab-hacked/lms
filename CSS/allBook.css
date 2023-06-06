@@ -1,0 +1,67 @@
+
+/* css of all books navigation or search section */
+.all-books-nav{
+    height: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 35px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+.all-books h3{
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* css of search div */
+.search-box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    gap: 10px;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+/* css for search input field */
+.search-box input{
+    width: 335px;
+    outline: none;
+    border: none;
+}
+.search-box input::placeholder{
+    letter-spacing: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+/* css for search icon */
+.search-box svg{
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* css for page breaking line and view  */
+.page-break{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+.line-view{
+    width: 350px;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.page-break a{
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0, 16, 104, 0.9);
+}

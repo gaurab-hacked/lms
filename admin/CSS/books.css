@@ -1,0 +1,9 @@
+.formContent{
+    padding-top: 15px;
+}
+.formContent #bimage{
+    padding-bottom: 30px;
+}
+.formContent form input{
+    border: 1px solid #000000;
+  }

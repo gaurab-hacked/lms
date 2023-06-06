@@ -1,0 +1,147 @@
+#modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000000000000;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: none;
+}
+#semicontent {
+  margin-left: -30px;
+}
+#background {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#contentModal {
+  height: 300px;
+  width: 480px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 20px;
+  position: relative;
+}
+
+#modalOpen:hover {
+  background-color: rgb(42, 42, 42);
+  color: white;
+}
+#crossModal {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: none;
+  font-size: 22px;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.645);
+}
+#crossModal:hover {
+  color: black;
+}
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none;
+}
+.formContent {
+  margin: 0 50px;
+  margin-top: -20px;
+}
+.formContent form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  justify-content: center;
+  height: 300px;
+}
+.formContent form input {
+  padding: 6px 10px;
+  font-size: 17px;
+}
+
+.formButtons {
+  display: flex;
+  gap: 30px;
+}
+
+.formButtons button {
+  width: 50%;
+  padding: 10px;
+  outline: none;
+  border: none;
+  box-shadow: 0 2px 4px rgba(128, 128, 128, 0.288);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.formButtons button:hover {
+  background-color: blue;
+  color: white;
+}
+
+.contentTable {
+  width: 96%;
+  margin: auto;
+  margin-top: 20px;
+  position: relative;
+  font-size: 13px;
+}
+
+.contentTable table {
+  width: 100%;
+}
+.contentTable table,
+td,
+th,
+tr {
+  border: 1px solid rgba(0, 0, 0, 0.712);
+  text-align: center;
+  border-collapse: collapse;
+  padding: 10px;
+}
+td {
+  padding: 6px;
+}
+
+#modalOpen {
+  cursor: pointer;
+  float: right;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  transition: .2s;
+  padding: 8px 35px;
+  border: 1px solid rgba(0, 0, 255, 0.7);
+  background-color: white;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.8);
+  border-radius: 2px;
+}
+#modalOpen:hover{
+  background-color: #00005a !important;
+}
+
+#snTab {
+  width: 100px;
+}
+#nameTab {
+  width: 40%;
+}
+
+.contentTable table a svg {
+  fill: rgba(0, 0, 0, 0.777);
+}
+.contentTable table a svg:hover {
+  fill: black;
+}
