@@ -1,0 +1,61 @@
+#content {
+  position: absolute;
+  top: 10vh;
+  right: 0;
+  bottom: 0;
+  left: 120px;
+}
+#snav,
+#topMain {
+  z-index: 1111111111;
+}
+#semicontent {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+
+/* for pagintion  */
+.pagination {
+  display: inline-block;
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+}
+
+.pagination a {
+  color: rgb(0, 0, 0);
+  float: left;
+  height: 35px;
+  width: 35px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border: 1px solid rgb(44, 44, 95);
+  margin: 0 4px;
+}
+
+.pagination a.activePage {
+  background-color: rgb(151, 151, 224);
+  color: var(--bg-white);
+  border: 1px solid blue !important;
+}
+
+.pagination a:hover:not(.activePage) {
+  background-color: white !important;
+  color: black;
+}
+.rightArrow {
+  padding-bottom: 5px;
+  padding-left: 2px;
+  font-size: 22px;
+}
+.leftArrow {
+  padding-bottom: 5px;
+  padding-right: 2px;
+  font-size: 22px;
+}

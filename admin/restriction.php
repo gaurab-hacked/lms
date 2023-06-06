@@ -7,8 +7,6 @@ if (!$con) {
     die("DB connection failed");
 }
 
-$sqlFetch = "SELECT `id`, `name`, `email`, `phnumber` FROM users WHERE `restriction` = '1'";
-$resFetch = mysqli_query($con, $sqlFetch);
 
 if (isset($_GET['search'])) {
     $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -49,6 +47,27 @@ if (isset($_GET['unblock'])) {
         header("Location: " . $_SERVER['PHP_SELF']);
     }
 }
+
+// ================================ for pagination (start) ==========================================
+$querytotalnumberROw = "SELECT COUNT(*) as total FROM users ";
+$resultRowNum = mysqli_query($con, $querytotalnumberROw);
+$rowNumbers = mysqli_fetch_assoc($resultRowNum);
+$totalRowNumber = $rowNumbers['total'];
+
+// for total page 
+$recordsPerPage = 10;
+$totalPages = ceil($totalRowNumber / $recordsPerPage);
+
+// my current page
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+
+$offset = ($currentPage - 1) * $recordsPerPage;
+
+
+$sqlFetch = "SELECT * FROM users WHERE `restriction` = '1' ORDER BY id DESC LIMIT $offset, $recordsPerPage";
+$resFetch = mysqli_query($con, $sqlFetch);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +80,7 @@ if (isset($_GET['unblock'])) {
     <title>Members</title>
     <link rel="stylesheet" href="./sidestyles.css">
     <link rel="stylesheet" href="./CSS/messagemodel.css">
-    <link rel="stylesheet" href="../CSS/globalass.css">
+    <link rel="stylesheet" href="../CSS/globals.css">
 
     <style>
         #action,
@@ -80,7 +99,7 @@ if (isset($_GET['unblock'])) {
             <div id="maincontent">
             </div>
             <div class="contentTable">
-                <h2>Restricted member of LMS:-</h2><br>
+                <h2>Restricted Member of LMS:-</h2><br>
                 <table>
                     <tr>
                         <th id='snTab'>S.N</th>
@@ -120,6 +139,26 @@ if (isset($_GET['unblock'])) {
                     ?>
                 </table>
             </div>
+            <div class="pagination">
+                    <?php
+                    if ($currentPage > 1) {
+                        echo '<a href="?page=' . ($currentPage - 1) . '" class="leftArrow">&laquo;</a>';
+                    } else {
+                        echo '<a class="leftArrow">&laquo;</a>';
+                    }
+
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        $activeClass = ($currentPage == $i) ? 'activePage' : '';
+                        echo '<a href="?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
+                    }
+
+                    if ($currentPage < $totalPages) {
+                        echo '<a href="?page=' . ($currentPage + 1) . '" class="rightArrow">&raquo;</a>';
+                    } else {
+                        echo '<a class="rightArrow">&raquo;</a>';
+                    }
+                    ?>
+                </div>
         </div>
     </div>
 </body>

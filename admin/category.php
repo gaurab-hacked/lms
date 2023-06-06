@@ -7,25 +7,32 @@ if (!$con) {
     die("DB connection failed");
 }
 
-// for add content to db
 if (isset($_POST['addContent'])) {
     $cname = $_POST['cName'];
-    $dorder = $_POST['dOrder'];
 
-    // to insert data into db
-    $sql = "INSERT INTO `category` (`cname`, `dorder`) VALUES ('$cname', '$dorder')";
-    if (mysqli_query($con, $sql)) {
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-        // echo "Inserted success";
+    // Check if cname already exists in the database
+    $checkQuery = "SELECT COUNT(*) FROM `category` WHERE `cname` = '$cname'";
+    $result = mysqli_query($con, $checkQuery);
+    $row = mysqli_fetch_array($result);
+    $count = $row[0];
+
+    if ($count == 0) {
+        // Insert the data into the database
+        $sql = "INSERT INTO `category` (`cname`) VALUES ('$cname')";
+        if (mysqli_query($con, $sql)) {
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+            // echo "Inserted success";
+        } else {
+            // Handle the insertion failure
+        }
     } else {
-        // echo "Inserted success";
+        // Handle the case when cname already exists
     }
 }
 
-// for get content from db
-$sqlFetch = "SELECT * FROM category";
-$resFetch = mysqli_query($con, $sqlFetch);
+
+
 
 
 // for delete content
@@ -43,7 +50,6 @@ if (isset($_GET['delete'])) {
 
 // for edit logic
 $cName = "";
-$dOrder = "";
 $editId = 0;
 if (isset($_GET['edit'])) {
     $editId = $_GET['edit'];
@@ -52,15 +58,13 @@ if (isset($_GET['edit'])) {
     if (mysqli_num_rows($res) > 0) {
         $row = mysqli_fetch_assoc($res);
         $cName = $row['cname'];
-        $dOrder = $row['dorder'];
     }
 }
 if (isset($_POST['updateContent'])) {
     $cname = $_POST['cName'];
-    $dorder = $_POST['dOrder'];
     $id = $_POST['editId'];
     // echo $id;
-    $sql = "UPDATE `category` SET `cname`='$cname', `dorder`='$dorder' WHERE `id`='$id'";
+    $sql = "UPDATE `category` SET `cname`='$cname' WHERE `id`='$id'";
     if (mysqli_query($con, $sql)) {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
@@ -69,6 +73,7 @@ if (isset($_POST['updateContent'])) {
     }
 }
 
+// =======================Search Logic====================
 if (isset($_GET['search'])) {
     $search = isset($_GET['search']) ? $_GET['search'] : '';
     // Escape the search value to prevent SQL injection
@@ -82,6 +87,24 @@ if (isset($_GET['search'])) {
     }
 }
 
+// ================================ for pagination (start) ==========================================
+$querytotalnumberROw = "SELECT COUNT(*) as total FROM category";
+$resultRowNum = mysqli_query($con, $querytotalnumberROw);
+$rowNumbers = mysqli_fetch_assoc($resultRowNum);
+$totalRowNumber = $rowNumbers['total'];
+
+// for total page 
+$recordsPerPage = 10;
+$totalPages = ceil($totalRowNumber / $recordsPerPage);
+
+// my current page
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+
+$offset = ($currentPage - 1) * $recordsPerPage;
+
+
+$sqlFetch = "SELECT * FROM category ORDER BY id DESC LIMIT $offset, $recordsPerPage";
+$resFetch = mysqli_query($con, $sqlFetch);
 
 ?>
 
@@ -95,8 +118,9 @@ if (isset($_GET['search'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category</title>
     <link rel="stylesheet" href="./sidestyles.css">
-    <link rel="stylesheet" href="../CSS/globalass.css">
+    <link rel="stylesheet" href="../CSS/globals.css">
     <link rel="stylesheet" href="./CSS/model.css">
+
 </head>
 
 <body>
@@ -110,8 +134,7 @@ if (isset($_GET['search'])) {
                     <table>
                         <tr>
                             <th id="snTab">S.N</th>
-                            <th id="nameTab">Name</th>
-                            <th>Display order</th>
+                            <th>Name</th>
                             <th colspan="2">Action</th>
                         </tr>
                         <?php
@@ -122,7 +145,6 @@ if (isset($_GET['search'])) {
                         <tr  style='text-transform:capitalize'>
                             <td>" . $index . "</td>
                             <td>" . $row["cname"] . "</td>
-                            <td>" . $row["dorder"] . "</td>
                             <td>
                                 <a href=\"./category.php?edit=" . $row["id"] . "\">
                                     <svg width='16' height='16' viewBox='0 0 25 24' xmlns='http://www.w3.org/2000/svg'>
@@ -144,7 +166,27 @@ if (isset($_GET['search'])) {
                         ?>
                     </table>
                 </div>
+                                        <!-- ================================= for pagination =============================== -->
+                <div class="pagination">
+                    <?php
+                    if ($currentPage > 1) {
+                        echo '<a href="?page=' . ($currentPage - 1) . '" class="leftArrow">&laquo;</a>';
+                    } else {
+                        echo '<a class="leftArrow">&laquo;</a>';
+                    }
 
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        $activeClass = ($currentPage == $i) ? 'activePage' : '';
+                        echo '<a href="?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
+                    }
+
+                    if ($currentPage < $totalPages) {
+                        echo '<a href="?page=' . ($currentPage + 1) . '" class="rightArrow">&raquo;</a>';
+                    } else {
+                        echo '<a class="rightArrow">&raquo;</a>';
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </div>
@@ -158,9 +200,9 @@ if (isset($_GET['search'])) {
                 <button id="crossModal">X</button>
                 <div class="formContent">
                     <form action="./category.php" method="post">
+                        <h2 style="opacity:0.5">Add category</h2>
                         <input type="hidden" name="editId" value="<?php echo $editId ?>" id="">
                         <input type="text" name="cName" value="<?php echo $cName ?>" id=" cName" placeholder="Category Name" required>
-                        <input type="number" name="dOrder" value="<?php echo $dOrder ?>" id=" dOrder" placeholder="Display Order" required>
                         <div class="formButtons">
                             <?php
                             if (intval($editId) > 0) {

@@ -11,9 +11,6 @@ if (!$con) {
 $sqlFetchCat = "SELECT DISTINCT cname FROM `category`";
 $resFetchsub = mysqli_query($con, $sqlFetchCat);
 
-// for get Book content from db
-$sqlFetch = "SELECT * FROM books";
-$resFetch = mysqli_query($con, $sqlFetch);
 
 if (isset($_GET['search'])) {
     $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -212,6 +209,25 @@ if (isset($_GET['search'])) {
 }
 
 
+// ================================ for pagination (start) ==========================================
+$querytotalnumberROw = "SELECT COUNT(*) as total FROM books";
+$resultRowNum = mysqli_query($con, $querytotalnumberROw);
+$rowNumbers = mysqli_fetch_assoc($resultRowNum);
+$totalRowNumber = $rowNumbers['total'];
+
+// for total page 
+$recordsPerPage = 10;
+$totalPages = ceil($totalRowNumber / $recordsPerPage);
+
+// my current page
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+
+$offset = ($currentPage - 1) * $recordsPerPage;
+
+
+// for get Book content from db
+$sqlFetch = "SELECT * FROM books ORDER BY id DESC LIMIT $offset, $recordsPerPage";
+$resFetch = mysqli_query($con, $sqlFetch);
 
 ?>
 
@@ -225,7 +241,7 @@ if (isset($_GET['search'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
     <link rel="stylesheet" href="./sidestyles.css">
-    <link rel="stylesheet" href="../CSS/globalass.css">
+    <link rel="stylesheet" href="../CSS/globals.css">
     <link rel="stylesheet" href="./CSS/model.css">
     <link rel="stylesheet" href="./CSS/books.css">
     <style>
@@ -316,7 +332,26 @@ if (isset($_GET['search'])) {
                         ?>
                     </table>
                 </div>
+                <div class="pagination">
+                    <?php
+                    if ($currentPage > 1) {
+                        echo '<a href="?page=' . ($currentPage - 1) . '" class="leftArrow">&laquo;</a>';
+                    } else {
+                        echo '<a class="leftArrow">&laquo;</a>';
+                    }
 
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        $activeClass = ($currentPage == $i) ? 'activePage' : '';
+                        echo '<a href="?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
+                    }
+
+                    if ($currentPage < $totalPages) {
+                        echo '<a href="?page=' . ($currentPage + 1) . '" class="rightArrow">&raquo;</a>';
+                    } else {
+                        echo '<a class="rightArrow">&raquo;</a>';
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </div>

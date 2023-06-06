@@ -8,25 +8,8 @@ if (!$con) {
 }
 
 // for get category content from db
-$sqlFetchsub = "SELECT DISTINCT cname FROM `category`";
+$sqlFetchsub = "SELECT * FROM `category`";
 $resFetchsub = mysqli_query($con, $sqlFetchsub);
-
-// for get subcategory content from db
-$sqlFetch = "SELECT * FROM subcategory";
-$resFetch = mysqli_query($con, $sqlFetch);
-
-if (isset($_GET['search'])) {
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
-    // Escape the search value to prevent SQL injection
-    $search = mysqli_real_escape_string($con, $search);
-
-    // Check if the search value is set
-    if (!empty($search)) {
-        // Query with the search value
-        $sqlFetch = "SELECT * FROM subcategory WHERE subcatname LIKE '%$search%'";
-        $resFetch = mysqli_query($con, $sqlFetch);
-    }
-}
 
 // for add content to db
 if (isset($_POST['addContent'])) {
@@ -34,11 +17,21 @@ if (isset($_POST['addContent'])) {
     $cid = $_POST['category'];
 
     $catName = "";
-
-    $res = mysqli_query($con, $sqlFetchsub);
+    $sqlFetch = "SELECT * FROM `category` WHERE `id` = '$cid'";
+    $res = mysqli_query($con, $sqlFetch);
     if (mysqli_num_rows($res) > 0) {
-        $row = mysqli_fetch_assoc($res);
-        $catName = $row['cname'];
+        while ($row = mysqli_fetch_assoc($res)) {
+            if ($row['id'] == $cid) {
+                $catName = $row['cname'];
+            }
+        }
+    }
+
+    $checkDuplicate = "SELECT * FROM subcategory WHERE cname = '$catName' AND subcatname = '$subCname'";
+    $resDub = mysqli_query($con, $checkDuplicate);
+
+    if (mysqli_num_rows($resDub) > 0) {
+        die("Already exists");
     }
 
 
@@ -51,7 +44,6 @@ if (isset($_POST['addContent'])) {
         // echo "Inserted Success";
     }
 }
-
 
 
 // for delete content
@@ -69,6 +61,7 @@ if (isset($_GET['delete'])) {
 
 
 // for edit logic
+$catId = 0;
 $subCname = "";
 $subcatname = "";
 $editId = 0;
@@ -80,6 +73,7 @@ if (isset($_GET['edit'])) {
         $row = mysqli_fetch_assoc($res);
         $cName = $row['cname'];
         $subcatname = $row['subcatname'];
+        $catId = $row['cId'];
     }
 }
 if (isset($_POST['updateContent'])) {
@@ -102,6 +96,42 @@ if (isset($_POST['updateContent'])) {
         echo "Cannot Update";
     }
 }
+
+// ================================ for pagination (start) ==========================================
+$querytotalnumberROw = "SELECT COUNT(*) as total FROM subcategory";
+$resultRowNum = mysqli_query($con, $querytotalnumberROw);
+$rowNumbers = mysqli_fetch_assoc($resultRowNum);
+$totalRowNumber = $rowNumbers['total'];
+
+// for total page 
+$recordsPerPage = 10;
+$totalPages = ceil($totalRowNumber / $recordsPerPage);
+
+// my current page
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+
+$offset = ($currentPage - 1) * $recordsPerPage;
+
+
+// for get subcategory content from db
+$sqlFetch = "SELECT * FROM subcategory ORDER BY id DESC LIMIT $offset, $recordsPerPage";
+$resFetch = mysqli_query($con, $sqlFetch);
+
+
+// ++++++++++++++++Search Logic+++++++++++++++++++
+if (isset($_GET['search'])) {
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    // Escape the search value to prevent SQL injection
+    $search = mysqli_real_escape_string($con, $search);
+
+    // Check if the search value is set
+    if (!empty($search)) {
+        // Query with the search value
+        $sqlFetch = "SELECT * FROM subcategory WHERE subcatname LIKE '%$search%'";
+        $resFetch = mysqli_query($con, $sqlFetch);
+    }
+}
+
 ?>
 
 
@@ -112,9 +142,9 @@ if (isset($_POST['updateContent'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category</title>
+    <title>Sub-Category</title>
     <link rel="stylesheet" href="./sidestyles.css">
-    <link rel="stylesheet" href="../CSS/globalass.css">
+    <link rel="stylesheet" href="../CSS/globals.css">
     <link rel="stylesheet" href="./CSS/model.css">
     <style>
         select {
@@ -173,7 +203,26 @@ if (isset($_POST['updateContent'])) {
                         ?>
                     </table>
                 </div>
+                <div class="pagination">
+                    <?php
+                    if ($currentPage > 1) {
+                        echo '<a href="?page=' . ($currentPage - 1) . '" class="leftArrow">&laquo;</a>';
+                    } else {
+                        echo '<a class="leftArrow">&laquo;</a>';
+                    }
 
+                    for ($i = 1; $i <= $totalPages; $i++) {
+                        $activeClass = ($currentPage == $i) ? 'activePage' : '';
+                        echo '<a href="?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
+                    }
+
+                    if ($currentPage < $totalPages) {
+                        echo '<a href="?page=' . ($currentPage + 1) . '" class="rightArrow">&raquo;</a>';
+                    } else {
+                        echo '<a class="rightArrow">&raquo;</a>';
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </div>
@@ -187,17 +236,22 @@ if (isset($_POST['updateContent'])) {
                 <button id="crossModal">X</button>
                 <div class="formContent">
                     <form action="./subcategory.php" method="post">
+                        <p>Category</p>
                         <select name="category" id="category">
                             <?php
                             if (mysqli_num_rows($resFetchsub) > 0) {
                                 while ($rowcat = mysqli_fetch_assoc($resFetchsub)) {
-                                    echo "<option value=" . $rowcat['id'] . ">" . $rowcat['cname'] . "</option>";
+                                    $selected = ($catId == $rowcat['id']) ? 'selected' : '';
+                                    echo "<option " . $selected . " value='" . $rowcat['id'] . "'>" . $rowcat['cname'] . "</option>";
                                 }
                             }
+
                             ?>
                         </select>
                         <input type="hidden" name="editId" value="<?php echo $editId ?>" id="">
-                        <input type="text" name="subCame" value="<?php echo $subcatname ?>" id=" cName" placeholder="Subcategory Name" required>
+                        <p>SubCategory</p>
+                        <input type="text" name="subCame" value="<?php echo $subcatname ?>" id=" cName"
+                            placeholder="Subcategory Name" required>
                         <div class="formButtons">
                             <?php
                             if (intval($editId) > 0) {
