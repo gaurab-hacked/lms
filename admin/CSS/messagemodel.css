@@ -1,0 +1,114 @@
+
+/* CSS of making of modal and background blorr  */
+#modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000000000000;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: none;
+}
+#semicontent {
+  margin-left: -30px;
+}
+
+#background {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#contentModal {
+  height: 350px;
+  width: 500px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 4px;
+  padding: 20px;
+  position: relative;
+}
+
+#modalOpen:hover {
+  color: white;
+}
+/* for closing the modal by clicking on X  */
+#crossModal {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  border: none;
+  font-size: 22px;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.645);
+}
+#crossModal:hover {
+  color: black;
+}
+
+/* CSS for showing the content in table and style of table */
+.contentTable {
+  width: 96%;
+  margin: auto;
+  margin-top: 20px;
+  position: relative;
+  font-size: 13px;
+}
+
+.contentTable table {
+  width: 100%;
+}
+.contentTable table, td, th, tr {
+  border: 1px solid rgba(0, 0, 0, 0.712);
+  text-align: center;
+  border-collapse: collapse;
+  padding: 10px;
+}
+td {
+  padding: 6px;
+}
+
+/* Showing the content of message in modal  */
+#contentModal .formContent {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 15px;
+  margin-top: 10px;
+  height: 240px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 9px;
+}
+
+#contentModal .formContent p {
+  width: 100%;
+  height: 150px;
+  box-shadow: 0px 1px 2px 0px rgba(53, 52, 52, 0.3);
+  font-size: 14px;
+  padding: 5px;
+}
+.label {
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* css for showing of message in modal */
+.valueMessage {
+  color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 200%;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+}
+.valueMessage p{
+  height: 100%;
+}

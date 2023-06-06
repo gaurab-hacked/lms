@@ -1,0 +1,345 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* for navigation Bar */
+.navbar {
+  background-color: white;
+  height: 8vh;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  z-index: 1000000;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: auto;
+  max-width: 1700px;
+  min-height: 60px;
+}
+
+/* for main logo of system */
+#logo {
+  max-height: 75px;
+}
+.navbar a {
+  text-decoration: none;
+  color: inherit;
+  letter-spacing: 1px;
+}
+.menu {
+  justify-content: space-between;
+  align-items: center;
+  width: 55%;
+}
+/* nav bar list */
+.list {
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  font-weight: 600;
+  align-items: center;
+}
+
+/* For login Button */
+.lg-btn {
+  padding: 8px 25px;
+  background-color: rgba(144, 132, 214, 1);
+  border-radius: 3px;
+}
+
+/* For displaying active border in item buttom */
+.list li:not(:last-child) a {
+  padding: 4px 1px;
+  position: relative;
+}
+/* Not underlying in last item */
+.list li:not(:last-child) a::before {
+  content: "";
+  position: absolute;
+  height: 3px;
+  min-width: 20px;
+  width: 40%;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  border-radius: 5px;
+}
+
+/* for first main body content */
+
+.container {
+  box-shadow: inset 0px 5px 5px -5px rgba(0, 0, 0, 0.5);
+  background-color: rgba(248, 248, 248, 1);
+  max-width: 1700px;
+  margin: auto;
+  padding-top: 65px !important;
+  min-height: 750px;
+}
+#hero-section {
+  min-height: 60vh;
+}
+.mini-container {
+  width: 83%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sub-content1 {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 500px;
+  padding: 5px;
+}
+.sub-content1 .para {
+  font-size: 7px;
+  text-align: start;
+  margin: 10px 0;
+  letter-spacing: 1px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgba(0, 0, 0, 0.6);
+}
+.search-head h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+  text-align: justify;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Css of search section */
+.sub-content1 .search-box {
+  border: 2px solid rgba(144, 132, 214, 1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  height: 53px;
+}
+
+.search {
+  background-color: rgba(144, 132, 214, 1);
+  display: flex;
+  height: 100%;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  width: 160px;
+}
+.search h2 {
+  letter-spacing: 1.5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+}
+.search-box .inp-field input {
+  width: 150%;
+  padding: 15px 10px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+.search-box .inp-field input::placeholder {
+  font-size: 17px;
+}
+
+/* book section css */
+.bookNav {
+  display: flex;
+  height: 60px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin: auto;
+}
+.popular {
+  margin-left: 35px;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+/* second navigation for books */
+.nav-list ul {
+  display: flex;
+  gap: 70px;
+  margin-right: 45px;
+}
+.nav-list ul li {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+  font-size: 17px;
+  font-weight: 600;
+  list-style: none;
+}
+.nav-list ul li a {
+  text-decoration: none;
+  color: black;
+}
+
+/* Books Details Showing Css Section */
+.books-details {
+  margin-top: 10px;
+  padding: 30px 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  row-gap: 50px;
+  column-gap: 25px;
+}
+/* books name and details */
+.book-details-list {
+  max-width: 400px;
+  height: 230px;
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+/* image of books */
+.book-img {
+  /* width: 50%; */
+  margin-top: -30px;
+}
+.book-img img {
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  min-height: 220px;
+  max-height: 250px;
+  width: 100%;
+  min-width: 100px;
+  max-width: 150px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+/* book title and author */
+.details {
+  text-transform: capitalize;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+.details p {
+  font-size: 13px;
+}
+
+/* book title and author */
+.book-name {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: rgba(0, 0, 0, 0.8);
+}
+.book-name h4 {
+  font-size: 13px;
+}
+.details p {
+  text-align: justify;
+}
+.date {
+  margin: 5px 0;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+/* for pre order button */
+.pre-order-btn {
+  margin-top: 10px;
+}
+.pre-order-btn a button {
+  font-weight: 600;
+  background-color: rgba(144, 132, 214, 1);
+  border: none;
+  padding: 7px 20px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+/* CSS of footer content */
+.footer {
+  font-family: Arial, Helvetica, sans-serif;
+  height: 150px;
+  max-width: 1700px;
+  margin: auto;
+  width: 100%;
+  background-color: rgba(144, 132, 214, 0.7);
+}
+.footer-content {
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  display: flex;
+  justify-content: space-evenly;
+}
+/* css of logo of system */
+.footer-left {
+  margin-top: 25px;
+  height: 80px;
+  width: 180px;
+}
+.footer-left img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+/* css of created by and services */
+.footer-mid {
+  line-height: 25px;
+}
+.footer-mid h3 {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.8);
+  margin-top: 25px;
+}
+.footer-mid h5 {
+  color: rgba(0, 0, 0, 0.6);
+}
+/* css of social media icons */
+.footer-mid .svg-items {
+  display: flex;
+  width: 150px;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.footer-mid .svg-items .insta {
+  margin-left: -10px;
+}
+
+/* Last part of footer */
+.footer-copyright {
+  max-width: 1700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 50px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(5, 53, 92, 1);
+}
+.pageNotFound {
+  min-height: 50vh;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgba(0, 0, 0, 0.6);
+}

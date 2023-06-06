@@ -1,0 +1,134 @@
+html {
+  height: 100%;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+  overflow: hidden;
+}
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: #0b111a;
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  height: 390px;
+}
+.login-box h2 {
+  margin: 0 0 40px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 1px;
+  text-decoration: underline;
+}
+.login-box .user-box {
+  position: relative;
+}
+.login-box .user-box input {
+  width: 100% !important;
+  max-width: 300px;
+  padding: 10px 10px;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 40px;
+  border: none;
+  background: transparent;
+}
+.login-box .user-box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: 0.5s;
+  user-select: none;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 5px;
+  color: #03e9f4;
+  font-size: 12px;
+  background-color: #0b111a;
+  height: 5px;
+  padding: 10px 6px;
+}
+
+#LoginBtn {
+  padding: 9px 25px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+#LoginBtn:hover {
+  background-color: white;
+  color: rgba(0, 0, 0, 0.763);
+}
+.eye svg {
+  fill: white;
+  position: absolute;
+  right: 6px;
+  top: 13px;
+  cursor: pointer;
+  background-color: #0b111a;
+}
+.passwordbox input {
+  margin-bottom: 10px !important;
+}
+
+.signuplink {
+  color: white;
+  font-size: 14px;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+.signuplink a {
+  color: rgba(67, 129, 255, 0.892);
+}
+
+.error {
+  background-color: rgb(255, 8, 0);
+}
+.success {
+  background-color: rgb(0, 195, 0);
+}
+
+#showNotification {
+  display: inline;
+  padding: 12px 20px;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  margin-top: 10px;
+  position: absolute;
+  right: 10px;
+  transition: 0.3s;
+}
+
+.notificationshow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.notificationshow .name {
+  font-weight: 600;
+  letter-spacing: 0;
+}

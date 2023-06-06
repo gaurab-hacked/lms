@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: linear-gradient(#141e30, #243b55);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#regForm {
+  min-height: 300px;
+  max-width: 700px;
+  min-width: 500px;
+  background-color: #0b111a;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+  padding: 20px;
+}
+#regForm h2 {
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 20px;
+  margin-bottom: 30px;
+  text-decoration: underline;
+}
+#regForm form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 25px;
+  width: 80%;
+  margin: auto;
+}
+.animationfld {
+  color: white !important;
+  padding: 10px;
+  position: relative;
+  border-radius: 3px;
+  height: 45px;
+  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.animationfld input {
+  position: absolute;
+  inset: 0;
+  outline: none;
+  border: none;
+  padding: 10px;
+  font-size: 17px;
+  background-color: transparent;
+  color: white;
+  letter-spacing: 1px;
+}
+.animationfld label {
+  top: -10px;
+  left: 7px;
+  background-color: #0b111a;
+  padding: 0 7px;
+  position: absolute;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none;
+}
+
+#regBtn {
+  padding: 9px 25px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  border-radius: 2px;
+  transition: 0.3s;
+  margin-bottom: 20px;
+  max-width: 160px;
+}
+#regBtn:hover {
+  background-color: white;
+  color: rgba(0, 0, 0, 0.763);
+}
+label {
+  color: white;
+}
+.radioinp {
+  display: flex;
+  gap: 30px;
+}
+.radioinp label {
+  letter-spacing: 1px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+}
+#regForm p {
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 1px;
+}
+#regForm p a {
+  color: rgba(143, 143, 255, 0.837);
+}
+
+.eye {
+  position: absolute;
+  fill: rgba(255, 255, 255, 0.8) !important;
+  z-index: 100000;
+  top: 15px;
+  cursor: pointer;
+  right: 10px;
+}
+
+#Password {
+  padding-right: 50px;
+}
+
+#eyeOpen,
+#eyeClose {
+  cursor: pointer;
+}
+
+.error {
+  background-color: rgb(255, 8, 0);
+}
+.success {
+  background-color: rgb(0, 195, 0);
+}
+
+#showNotification {
+  display: inline;
+  padding: 12px 20px;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  margin-top: 10px;
+  position: absolute;
+  right: 10px;
+  top: 0px;
+  transition: 0.3s;
+}
+.notificationshow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.notificationshow .name {
+  font-weight: 600;
+  letter-spacing: 0;
+}
