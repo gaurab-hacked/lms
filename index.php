@@ -18,6 +18,9 @@ if (!$con) {
 $sqlFetchAll = "SELECT * FROM `books`";
 $res = mysqli_query($con, $sqlFetchAll);
 
+$sqlcategory = "SELECT * FROM `category`";
+$rescategory = mysqli_query($con, $sqlcategory);
+
 if (isset($_GET['search'])) {
     $search = isset($_GET['search']) ? $_GET['search'] : '';
     // Escape the search value to prevent SQL injection
@@ -46,6 +49,15 @@ if (isset($_GET['search'])) {
         $res = mysqli_query($con, $sqlNote);
     }
 }
+
+if(isset($_GET['category'])){
+    $cat = $_GET['category'];
+    if($cat!='all'){
+        $sqlFetchAll = "SELECT * FROM `books` where categoryName = '$cat'";
+        $res = mysqli_query($con, $sqlFetchAll);
+    }
+}
+
 
 ?>
 
@@ -133,11 +145,20 @@ if (isset($_GET['search'])) {
             </div>
             <div class="nav-list">
                 <ul>
-                    <li><a href="#">ALL</a></li>
-                    <li><a href="#">BBM</a></li>
-                    <li><a href="#">BCA</a></li>
-                    <li><a href="#">BBA</a></li>
-                    <li><a href="#">BBS</a></li>
+                    <li><a href="?category=all">ALL</a></li>
+                    <?php 
+                    $i = 0;
+                    if(mysqli_num_rows($rescategory)>0){
+                        while($row = mysqli_fetch_assoc($rescategory)){
+                            $i++;
+                            if($i>5){
+                                break;
+                            }
+                            echo '<li><a href="?category='.strtolower($row["cname"]).'">'.$row["cname"].'</a></li>';
+                        }
+                    }
+                    ?>
+                    
                 </ul>
             </div>
         </div>
@@ -183,6 +204,7 @@ if (isset($_GET['search'])) {
         <?php include "./common/footer.php"; ?>
 
     </div>
+
 </body>
 
 </html>

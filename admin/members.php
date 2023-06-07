@@ -111,7 +111,11 @@ $resFetch = mysqli_query($con, $sqlFetch);
                         <th colspan='2' id='action'>Action</th>
                     </tr>
                     <?php
-                    $index = 1;
+                    if (isset($_GET['page'])) {
+                        $index = ($_GET['page'] - 1) * ($recordsPerPage) + 1;
+                    } else {
+                        $index = 1;
+                    }
                     if (mysqli_num_rows($resFetch) > 0) {
                         while ($row = mysqli_fetch_assoc($resFetch)) {
                             echo "
@@ -143,25 +147,25 @@ $resFetch = mysqli_query($con, $sqlFetch);
             </div>
             <!-- =======================pagination============================ -->
             <div class="pagination">
-                    <?php
-                    if ($currentPage > 1) {
-                        echo '<a href="?page=' . ($currentPage - 1) . '" class="leftArrow">&laquo;</a>';
-                    } else {
-                        echo '<a class="leftArrow">&laquo;</a>';
-                    }
+                <?php
+                if ($currentPage > 1) {
+                    echo '<a href="?page=' . ($currentPage - 1) . '" class="leftArrow">&laquo;</a>';
+                } else {
+                    echo '<a class="leftArrow">&laquo;</a>';
+                }
 
-                    for ($i = 1; $i <= $totalPages; $i++) {
-                        $activeClass = ($currentPage == $i) ? 'activePage' : '';
-                        echo '<a href="?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
-                    }
+                for ($i = 1; $i <= $totalPages; $i++) {
+                    $activeClass = ($currentPage == $i) ? 'activePage' : '';
+                    echo '<a href="?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
+                }
 
-                    if ($currentPage < $totalPages) {
-                        echo '<a href="?page=' . ($currentPage + 1) . '" class="rightArrow">&raquo;</a>';
-                    } else {
-                        echo '<a class="rightArrow">&raquo;</a>';
-                    }
-                    ?>
-                </div>
+                if ($currentPage < $totalPages) {
+                    echo '<a href="?page=' . ($currentPage + 1) . '" class="rightArrow">&raquo;</a>';
+                } else {
+                    echo '<a class="rightArrow">&raquo;</a>';
+                }
+                ?>
+            </div>
         </div>
     </div>
 </body>

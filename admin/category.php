@@ -138,7 +138,11 @@ $resFetch = mysqli_query($con, $sqlFetch);
                             <th colspan="2">Action</th>
                         </tr>
                         <?php
-                        $index = 1;
+                        if (isset($_GET['page'])) {
+                            $index = ($_GET['page'] - 1) * ($recordsPerPage) + 1;
+                        } else {
+                            $index = 1;
+                        }
                         if (mysqli_num_rows($resFetch) > 0) {
                             while ($row = mysqli_fetch_assoc($resFetch)) {
                                 echo "
@@ -166,7 +170,7 @@ $resFetch = mysqli_query($con, $sqlFetch);
                         ?>
                     </table>
                 </div>
-                                        <!-- ================================= for pagination =============================== -->
+                <!-- ================================= for pagination =============================== -->
                 <div class="pagination">
                     <?php
                     if ($currentPage > 1) {
@@ -202,7 +206,8 @@ $resFetch = mysqli_query($con, $sqlFetch);
                     <form action="./category.php" method="post">
                         <h2 style="opacity:0.5">Add category</h2>
                         <input type="hidden" name="editId" value="<?php echo $editId ?>" id="">
-                        <input type="text" name="cName" value="<?php echo $cName ?>" id=" cName" placeholder="Category Name" required>
+                        <input type="text" name="cName" value="<?php echo $cName ?>" id=" cName"
+                            placeholder="Category Name" required>
                         <div class="formButtons">
                             <?php
                             if (intval($editId) > 0) {

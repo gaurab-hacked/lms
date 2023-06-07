@@ -8,7 +8,7 @@ if (!$con) {
 }
 
 // for get category content from db
-$sqlFetchCat = "SELECT DISTINCT cname FROM `category`";
+$sqlFetchCat = "SELECT * FROM `category`";
 $resFetchsub = mysqli_query($con, $sqlFetchCat);
 
 
@@ -26,7 +26,7 @@ if (isset($_GET['search'])) {
 }
 
 // for get subcategory content from db
-$sqlFetchSubcat = "SELECT DISTINCT subcatname FROM `subcategory`";
+$sqlFetchSubcat = "SELECT * FROM `subcategory`";
 $resFetchSubcat = mysqli_query($con, $sqlFetchSubcat);
 
 
@@ -34,10 +34,8 @@ $resFetchSubcat = mysqli_query($con, $sqlFetchSubcat);
 // ============= Insertion Start ============
 
 if (isset($_POST['addContent'])) {
-
     // Define the directory to store uploaded images
     $targetDir = "uploads/";
-
     // Check if the target directory exists, if not, create it
     if (!file_exists($targetDir)) {
         mkdir($targetDir, 0777, true);
@@ -64,28 +62,47 @@ if (isset($_POST['addContent'])) {
                 $bname = $_POST['bname'];
                 $bauthor = $_POST['bauthor'];
                 $bquantity = $_POST['bquantity'];
-                $categoryid = $_POST['category'];
-                $subcategoryid = $_POST['subcategory'];
+                $cid = $_POST['category'];
+                $subcatid = $_POST['subcategory'];
                 $bpublishdate = $_POST['bpublishdate'];
                 $pubName = $_POST['pubname'];
 
 
                 // Fetch category name from category table
-                if (mysqli_num_rows($resFetchsub) > 0) {
-                    $res = mysqli_fetch_assoc($resFetchsub);
-                    $categoryName = $res['cname'];
+                $catName = "";
+                $sqlFetch = "SELECT * FROM `category` WHERE `id` = '$cid'";
+                $res = mysqli_query($con, $sqlFetch);
+                if (mysqli_num_rows($res) > 0) {
+                    while ($row = mysqli_fetch_assoc($res)) {
+                        if ($row['id'] == $cid) {
+                            $catName = $row['cname'];
+                        }
+                    }
                 }
 
                 // Fetch subcategory name from subcategory table
-                if (mysqli_num_rows($resFetchSubcat) > 0) {
-                    $ressubcat = mysqli_fetch_assoc($resFetchSubcat);
-                    $subcategoryName = $ressubcat['subcatname'];
+                $subcatName = "";
+                $sqlSubFetch = "SELECT * FROM `subcategory` WHERE `id` = '$subcatid'";
+                $resSub = mysqli_query($con, $sqlSubFetch);
+                if (mysqli_num_rows($resSub) > 0) {
+                    while ($ressubcat = mysqli_fetch_assoc($resSub)) {
+                        if ($ressubcat['id'] == $subcatid)
+                            $subcatName = $ressubcat['subcatname'];
+                    }
                 }
 
                 $final_image_path = $fileFront . $targetPath;
+                $checkDuplicate = "SELECT * FROM `books` WHERE `categoryName` = '$catName' AND `subcategoryName` = '$subcatName' AND `bname` = '$bname' AND `pubName`='$pubName'";
+                $resDub = mysqli_query($con, $checkDuplicate);
 
+                if (mysqli_num_rows($resDub) > 0) {
+                    // Duplicate record found, redirect to the desired page
+                    // echo "Dublicate Value";
+                    header("Location: book.php");
+                    exit;
+                }
                 // Insert data into the books table
-                $sql = "INSERT INTO books (bname, bauthor, bquantity, categoryid, subcategoryid, bpublishdate, categoryName, subcategoryName, bimage, pubName) VALUES ('$bname', '$bauthor', '$bquantity', '$categoryid', '$subcategoryid', '$bpublishdate', '$categoryName', '$subcategoryName', '$final_image_path', '$pubName')";
+                $sql = "INSERT INTO `books` (`bname`, `bauthor`, `bquantity`, `categoryid`, `subcategoryid`, `bpublishdate`, `categoryName`, `subcategoryName`, `bimage`, `pubName`) VALUES ('$bname', '$bauthor', '$bquantity', '$cid', '$subcatid', '$bpublishdate', '$catName', '$subcatName', '$final_image_path', '$pubName')";
 
                 if (mysqli_query($con, $sql)) {
                     // Data inserted successfully
@@ -143,16 +160,13 @@ $bpublishdate = "";
 
 if (isset($_GET['edit'])) {
     $editId = $_GET['edit'];
-    $editsql = "SELECT * FROM `books` WHERE `id` = ?";
-    $stmt = mysqli_prepare($con, $editsql);
-    mysqli_stmt_bind_param($stmt, "i", $editId);
-    mysqli_stmt_execute($stmt);
-    $editres = mysqli_stmt_get_result($stmt);
+    $editsql = "SELECT * FROM `books` WHERE `id` = $editId";
+    $editresult = mysqli_query($con, $editsql);
 
-    if (!$editres) {
+    if (!$editresult) {
         echo "Book not found";
     } else {
-        $book = mysqli_fetch_array($editres);
+        $book = mysqli_fetch_array($editresult);
         $bid = $book['id'];
         $catName = $book['categoryName'];
         $subcatname = $book['subcategoryName'];
@@ -174,11 +188,10 @@ if (isset($_POST['updateContent'])) {
     $newBimage = $_POST['bimage'];
     $newBpublishdate = $_POST['bpublishdate'];
 
-    $updatesql = "UPDATE `books` SET `bname`=?, `bauthor`=?, `pubName`=?, `bquantity`=?, `bimage`=?, `bpublishdate`=? WHERE `id`=?";
-    $stmt = mysqli_prepare($con, $updatesql);
-    mysqli_stmt_bind_param($stmt, "ssssssi", $newBname, $newBauthor, $newPubName, $newBquantity, $newBimage, $newBpublishdate, $editId);
+    $updatesql = "UPDATE `books` SET `bname`=$newBname, `bauthor`=$newBauthor, `pubName`=$newPubName, `bquantity`=$newBquantity, `bimage`=$newBimage, `bpublishdate`=$newBpublishdate WHERE `id`=$editId";
+    $resUpdate = mysqli_query($con, $updatesql);
 
-    if (mysqli_stmt_execute($stmt)) {
+    if ($resUpdate) {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     } else {
@@ -188,9 +201,6 @@ if (isset($_POST['updateContent'])) {
     mysqli_stmt_close($stmt);
 }
 
-
-// $sqlFetchAll = "SELECT * FROM `books`";
-// $res = mysqli_query($con, $sqlFetchAll);
 
 // for searching
 // Retrieve the search value from the GET request]
@@ -297,7 +307,11 @@ $resFetch = mysqli_query($con, $sqlFetch);
                             <th colspan="2">Action</th>
                         </tr>
                         <?php
-                        $index = 1;
+                        if (isset($_GET['page'])) {
+                            $index = ($_GET['page'] - 1) * ($recordsPerPage) + 1;
+                        } else {
+                            $index = 1;
+                        }
                         if (mysqli_num_rows($resFetch) > 0) {
                             while ($row = mysqli_fetch_assoc($resFetch)) {
                                 echo "
@@ -369,7 +383,8 @@ $resFetch = mysqli_query($con, $sqlFetch);
                             <?php
                             if (mysqli_num_rows($resFetchsub) > 0) {
                                 while ($rowcat = mysqli_fetch_assoc($resFetchsub)) {
-                                    echo "<option value=" . $rowcat['id'] . ">" . $rowcat['cname'] . "</option>";
+                                    $selected = ($catId == $rowcat['id']) ? 'selected' : '';
+                                    echo "<option " . $selected . " value=" . $rowcat['id'] . ">" . $rowcat['cname'] . "</option>";
                                 }
                             }
                             ?>
@@ -378,19 +393,26 @@ $resFetch = mysqli_query($con, $sqlFetch);
                             <?php
                             if (mysqli_num_rows($resFetchSubcat) > 0) {
                                 while ($rowsubcat = mysqli_fetch_assoc($resFetchSubcat)) {
-                                    echo "<option value=" . $rowsubcat['id'] . ">" . $rowsubcat['subcatname'] . "</option>";
+                                    $selected = ($catId == $rowcat['id']) ? 'selected' : '';
+                                    echo "<option " . $selected . " value=".$rowsubcat['id'] . ">" . $rowsubcat['subcatname'] . "</option>";
                                 }
                             }
                             ?>
                         </select>
-                        <input type="hidden" name="editId" value="<?php echo $editId ?>" id="">
-                        <input type="text" name="bname" value="<?php echo $bname ?>" id=" bname" placeholder="Book Name" required>
-                        <input type="text" name="bauthor" value="<?php echo $bauthor ?>" id=" bauthor" placeholder="Author Name" required>
-                        <input type="text" name="pubname" value="<?php echo $pubName ?>" id="pubname" placeholder="Publication Name" required>
-                        <input type="number" name="bquantity" value="<?php echo $bquantity ?>" id=" bquantity" placeholder="Quantity" required>
-                        <input id="bimage" type="file" name="image" accept=".jpg, .png, .jpeg" value="<?php echo $bimage ?>" required>
+                        <input type="hidden" name="editId" value="<?php echo $editId ?>" id="editId">
+                        <input type="text" name="bname" value="<?php echo $bname ?>" id=" bname" placeholder="Book Name"
+                            required>
+                        <input type="text" name="bauthor" value="<?php echo $bauthor ?>" id=" bauthor"
+                            placeholder="Author Name" required>
+                        <input type="text" name="pubname" value="<?php echo $pubName ?>" id="pubname"
+                            placeholder="Publication Name" required>
+                        <input type="number" name="bquantity" value="<?php echo $bquantity ?>" id=" bquantity"
+                            placeholder="Quantity" required>
+                        <input id="bimage" type="file" name="image" accept=".jpg, .png, .jpeg"
+                            value="<?php echo $bimage ?>" required>
                         <div id="pbdate">
-                            <input type="date" name="bpublishdate" value="<?php echo $bpublishdate ?>" id=" bpublishdate" required>
+                            <input type="date" name="bpublishdate" value="<?php echo $bpublishdate ?>"
+                                id=" bpublishdate" required>
                         </div>
                         <div class="formButtons">
                             <?php

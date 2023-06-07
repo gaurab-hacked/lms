@@ -111,7 +111,11 @@ $resFetch = mysqli_query($con, $sqlFetch);
                             <th colspan='2'>Action</th>
                         </tr>
                         <?php
-                        $index = 1;
+                        if (isset($_GET['page'])) {
+                            $index = ($_GET['page'] - 1) * ($recordsPerPage) + 1;
+                        } else {
+                            $index = 1;
+                        }
                         if (mysqli_num_rows($resFetch) > 0) {
                             while ($row = mysqli_fetch_assoc($resFetch)) {
                                 $msgshow = strlen($row["cont_message"]) > 30 ? substr($row["cont_message"], 0, 30) . '...' : $row["cont_message"];
@@ -144,7 +148,7 @@ $resFetch = mysqli_query($con, $sqlFetch);
                     </table>
                 </div>
 
-<!-- =======================pagination============================ -->
+                <!-- =======================pagination============================ -->
                 <div class="pagination">
                     <?php
                     if ($currentPage > 1) {

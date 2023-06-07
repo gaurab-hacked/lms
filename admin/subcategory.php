@@ -31,8 +31,15 @@ if (isset($_POST['addContent'])) {
     $resDub = mysqli_query($con, $checkDuplicate);
 
     if (mysqli_num_rows($resDub) > 0) {
-        die("Already exists");
+        // Duplicate record found, redirect to the desired page
+        header("Location: subcategory.php");
+        exit; // It's a good practice to include exit() after redirecting to prevent further execution
+    } else {
+        // No duplicate record found, proceed with your logic
+
+        // Insert the new record or perform other operations
     }
+
 
 
     // to insert data into db
@@ -174,7 +181,11 @@ if (isset($_GET['search'])) {
                             <th colspan="2">Action</th>
                         </tr>
                         <?php
-                        $index = 1;
+                        if (isset($_GET['page'])) {
+                            $index = ($_GET['page'] - 1) * ($recordsPerPage) + 1;
+                        } else {
+                            $index = 1;
+                        }
                         if (mysqli_num_rows($resFetch) > 0) {
                             while ($row = mysqli_fetch_assoc($resFetch)) {
                                 echo "
