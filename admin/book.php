@@ -147,6 +147,39 @@ if (isset($_GET['delete'])) {
 
 // // for edit logic
 
+// $editId = 0;
+// $bid = "";
+// $catName = "";
+// $subcatname = "";
+// $bname = "";
+// $bauthor = "";
+// $pubName = "";
+// $bquantity = "";
+// $bimage = "";
+// $bpublishdate = "";
+
+// if (isset($_GET['edit'])) {
+//     $editId = $_GET['edit'];
+//     $editsql = "SELECT * FROM `books` WHERE `id` = $editId";
+//     $editresult = mysqli_query($con, $editsql);
+
+//     if (!$editresult) {
+//         echo "Book not found";
+//     } else {
+//         $book = mysqli_fetch_array($editresult);
+//         $bid = $book['id'];
+//         $catName = $book['categoryName'];
+//         $subcatname = $book['subcategoryName'];
+//         $bname = $book['bname'];
+//         $bauthor = $book['bauthor'];
+//         $pubName = $book['pubName'];
+//         $bquantity = $book['bquantity'];
+//         $bimage = $book['bimage'];
+//         $bpublishdate = $book['bpublishdate'];
+//     }
+// }
+
+// ======================================Update the data in the database===========================================
 $editId = 0;
 $bid = "";
 $catName = "";
@@ -179,26 +212,151 @@ if (isset($_GET['edit'])) {
     }
 }
 
-// Update the data in the database
+// ====================================== Update the data in the database =======================================
 if (isset($_POST['updateContent'])) {
-    $newBname = $_POST['bname'];
-    $newBauthor = $_POST['bauthor'];
-    $newPubName = $_POST['pubName'];
-    $newBquantity = $_POST['bquantity'];
-    $newBimage = $_POST['bimage'];
-    $newBpublishdate = $_POST['bpublishdate'];
-
-    $updatesql = "UPDATE `books` SET `bname`=$newBname, `bauthor`=$newBauthor, `pubName`=$newPubName, `bquantity`=$newBquantity, `bimage`=$newBimage, `bpublishdate`=$newBpublishdate WHERE `id`=$editId";
-    $resUpdate = mysqli_query($con, $updatesql);
-
-    if ($resUpdate) {
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
-    } else {
-        echo "Update failed: " . mysqli_stmt_error($stmt);
+    // Define the directory to store uploaded images
+    $targetDir = "uploads/";
+    // Check if the target directory exists, if not, create it
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0777, true);
     }
 
-    mysqli_stmt_close($stmt);
+    // Check if a file was uploaded
+    if (isset($_FILES["image"]) && $_POST["image"] != "") {
+        $file = $_FILES["image"];
+
+        // Get the file name and extension
+        $fileName = basename($file["name"]);
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        // Check if the file extension is allowed
+        $allowedExtensions = array("jpg", "jpeg", "png");
+        if (in_array($fileExtension, $allowedExtensions)) {
+            $targetPath = $targetDir . uniqid() . "." . $fileExtension;
+
+            // Move the uploaded file to the target directory
+            if (move_uploaded_file($file["tmp_name"], $targetPath)) {
+                // File uploaded successfully
+
+                // Get other form field values
+                $newBname = $_POST['bname'];
+                $newBauthor = $_POST['bauthor'];
+                $newPubName = $_POST['pubname'];
+                $newBquantity = $_POST['bquantity'];
+                $newCategoryId = $_POST['category']; // Updated category ID
+                $newSubcategoryId = $_POST['subcategory']; // Updated subcategory ID
+                $newBpublishdate = $_POST['bpublishdate'];
+                $editId = $_POST['editId'];
+
+                // Fetch category name from category table
+                $newCatName = "";
+                $sqlFetchCat = "SELECT * FROM `category` WHERE `id` = '$newCategoryId'";
+                $resCat = mysqli_query($con, $sqlFetchCat);
+                if (mysqli_num_rows($resCat) > 0) {
+                    while ($rowCat = mysqli_fetch_assoc($resCat)) {
+                        if ($rowCat['id'] == $newCategoryId) {
+                            $newCatName = $rowCat['cname'];
+                        }
+                    }
+                }
+
+                // Fetch subcategory name from subcategory table
+                $newSubcatName = "";
+                $sqlFetchSubcat = "SELECT * FROM `subcategory` WHERE `id` = '$newSubcategoryId'";
+                $resSubcat = mysqli_query($con, $sqlFetchSubcat);
+                if (mysqli_num_rows($resSubcat) > 0) {
+                    while ($rowSubcat = mysqli_fetch_assoc($resSubcat)) {
+                        if ($rowSubcat['id'] == $newSubcategoryId) {
+                            $newSubcatName = $rowSubcat['subcatname'];
+                        }
+                    }
+                }
+
+                // Delete the old image file
+                if (!empty($bimage) && file_exists($bimage)) {
+                    unlink($bimage);
+                }
+
+                $final_image_path = $targetPath;
+
+
+                // Update data in the books table
+                $updatesql = "UPDATE `books` SET `bname`='$newBname', `bauthor`='$newBauthor', `pubName`='$newPubName', `bquantity`='$newBquantity', `categoryid`='$newCategoryId', `subcategoryid`='$newSubcategoryId', `bpublishdate`='$newBpublishdate', `categoryName`='$newCatName', `subcategoryName`='$newSubcatName', `bimage`='$final_image_path' WHERE `id`='$editId'";
+                $resUpdate = mysqli_query($con, $updatesql);
+
+                if ($resUpdate) {
+                    // Data updated successfully
+                    header("Location: " . $_SERVER['PHP_SELF']);
+                    exit;
+                } else {
+                    // Error updating data
+                    echo "Update failed: " . mysqli_error($con);
+                }
+            } else {
+                // Failed to move the uploaded file
+                echo "Error uploading image.";
+            }
+        } else {
+            // Invalid file type
+            echo "Only JPG, JPEG, and PNG files are allowed.";
+        }
+    } else {
+        // No file uploaded, update other fields without changing the image
+        $newBname = $_POST['bname'];
+        $newBauthor = $_POST['bauthor'];
+        $newPubName = $_POST['pubname'];
+        $newBquantity = $_POST['bquantity'];
+        $newCategoryId = $_POST['category']; // Updated category ID
+        $newSubcategoryId = $_POST['subcategory']; // Updated subcategory ID
+        $newBpublishdate = $_POST['bpublishdate'];
+
+        // Fetch category name from category table
+        $newCatName = "";
+        $sqlFetchCat = "SELECT * FROM `category` WHERE `id` = '$newCategoryId'";
+        $resCat = mysqli_query($con, $sqlFetchCat);
+        if (mysqli_num_rows($resCat) > 0) {
+            while ($rowCat = mysqli_fetch_assoc($resCat)) {
+                if ($rowCat['id'] == $newCategoryId) {
+                    $newCatName = $rowCat['cname'];
+                }
+            }
+        }
+
+        // Fetch subcategory name from subcategory table
+        $newSubcatName = "";
+        $sqlFetchSubcat = "SELECT * FROM `subcategory` WHERE `id` = '$newSubcategoryId'";
+        $resSubcat = mysqli_query($con, $sqlFetchSubcat);
+        if (mysqli_num_rows($resSubcat) > 0) {
+            while ($rowSubcat = mysqli_fetch_assoc($resSubcat)) {
+                if ($rowSubcat['id'] == $newSubcategoryId) {
+                    $newSubcatName = $rowSubcat['subcatname'];
+                }
+            }
+        }
+
+        $checkDuplicate = "SELECT * FROM `books` WHERE `categoryName` = '$newCatName' AND `subcategoryName` = '$newSubcatName' AND `bname` = '$newBname' AND `pubName`='$newPubName'";
+        $resDub = mysqli_query($con, $checkDuplicate);
+
+        if (mysqli_num_rows($resDub) > 0) {
+            // Duplicate record found, redirect to the desired page
+            header("Location: book.php");
+            exit;
+        }
+
+        // Update data in the books table without changing the image
+        $updatesql = "UPDATE `books` SET `bname`='$newBname', `bauthor`='$newBauthor', `pubName`='$newPubName', `bquantity`='$newBquantity', `categoryid`='$newCategoryId', `subcategoryid`='$newSubcategoryId', `bpublishdate`='$newBpublishdate', `categoryName`='$newCatName', `subcategoryName`='$newSubcatName' WHERE `id`='$editId'";
+        $resUpdate = mysqli_query($con, $updatesql);
+
+        if ($resUpdate) {
+            echo "sussess";
+            // Data updated successfully
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            // Error updating data
+            echo "Update failed: " . mysqli_error($con);
+        }
+    }
 }
 
 
@@ -381,7 +539,7 @@ if (isset($_GET['search'])) {
                 <!-- For close button -->
                 <button id="crossModal">X</button>
                 <div class="formContent">
-                    <form action="./book.php" method="get" enctype="multipart/form-data">
+                    <form action="./book.php" method="post" enctype="multipart/form-data">
                         <select name="category" id="category">
                             <?php
                             if (mysqli_num_rows($resFetchsub) > 0) {
@@ -397,25 +555,19 @@ if (isset($_GET['search'])) {
                             if (mysqli_num_rows($resFetchSubcat) > 0) {
                                 while ($rowsubcat = mysqli_fetch_assoc($resFetchSubcat)) {
                                     $selected = ($catId == $rowcat['id']) ? 'selected' : '';
-                                    echo "<option " . $selected . " value=".$rowsubcat['id'] . ">" . $rowsubcat['subcatname'] . "</option>";
+                                    echo "<option " . $selected . " value=" . $rowsubcat['id'] . ">" . $rowsubcat['subcatname'] . "</option>";
                                 }
                             }
                             ?>
                         </select>
                         <input type="hidden" name="editId" value="<?php echo $editId ?>" id="editId">
-                        <input type="text" name="bname" value="<?php echo $bname ?>" id=" bname" placeholder="Book Name"
-                            required>
-                        <input type="text" name="bauthor" value="<?php echo $bauthor ?>" id=" bauthor"
-                            placeholder="Author Name" required>
-                        <input type="text" name="pubname" value="<?php echo $pubName ?>" id="pubname"
-                            placeholder="Publication Name" required>
-                        <input type="number" name="bquantity" value="<?php echo $bquantity ?>" id=" bquantity"
-                            placeholder="Quantity" required>
-                        <input id="bimage" type="file" name="image" accept=".jpg, .png, .jpeg"
-                            value="<?php echo $bimage ?>" required>
+                        <input type="text" name="bname" value="<?php echo $bname ?>" id=" bname" placeholder="Book Name" required>
+                        <input type="text" name="bauthor" value="<?php echo $bauthor ?>" id=" bauthor" placeholder="Author Name" required>
+                        <input type="text" name="pubname" value="<?php echo $pubName ?>" id="pubname" placeholder="Publication Name" required>
+                        <input type="number" name="bquantity" value="<?php echo $bquantity ?>" id=" bquantity" placeholder="Quantity" required>
+                        <input id="bimage" type="file" name="image" accept=".jpg, .png, .jpeg" value="<?php echo $bimage ?>" <?php echo isset($_GET['edit']) ? '' : 'required'; ?>>
                         <div id="pbdate">
-                            <input type="date" name="bpublishdate" value="<?php echo $bpublishdate ?>"
-                                id=" bpublishdate" required>
+                            <input type="date" name="bpublishdate" value="<?php echo $bpublishdate ?>" id=" bpublishdate" required>
                         </div>
                         <div class="formButtons">
                             <?php
