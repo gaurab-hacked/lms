@@ -202,22 +202,6 @@ if (isset($_POST['updateContent'])) {
 }
 
 
-// for searching
-// Retrieve the search value from the GET request]
-if (isset($_GET['search'])) {
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
-
-    // Escape the search value to prevent SQL injection
-    $search = mysqli_real_escape_string($con, $search);
-
-    // Check if the search value is set
-    if (!empty($search)) {
-        // Query with the search value
-        $sqlNote = "SELECT * FROM books WHERE bname LIKE '%$search%'";
-        $res = mysqli_query($con, $sqlNote);
-    }
-}
-
 
 // ================================ for pagination (start) ==========================================
 $querytotalnumberROw = "SELECT COUNT(*) as total FROM books";
@@ -238,6 +222,25 @@ $offset = ($currentPage - 1) * $recordsPerPage;
 // for get Book content from db
 $sqlFetch = "SELECT * FROM books ORDER BY id DESC LIMIT $offset, $recordsPerPage";
 $resFetch = mysqli_query($con, $sqlFetch);
+
+
+
+// for searching
+// Retrieve the search value from the GET request]
+if (isset($_GET['search'])) {
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    // Escape the search value to prevent SQL injection
+    $search = mysqli_real_escape_string($con, $search);
+
+    // Check if the search value is set
+    if (!empty($search)) {
+        // Query with the search value
+        $sqlFetch = "SELECT * FROM books WHERE bname LIKE '%$search%'";
+        $resFetch = mysqli_query($con, $sqlFetch);
+    }
+}
+
 
 ?>
 
@@ -378,7 +381,7 @@ $resFetch = mysqli_query($con, $sqlFetch);
                 <!-- For close button -->
                 <button id="crossModal">X</button>
                 <div class="formContent">
-                    <form action="./book.php" method="post" enctype="multipart/form-data">
+                    <form action="./book.php" method="get" enctype="multipart/form-data">
                         <select name="category" id="category">
                             <?php
                             if (mysqli_num_rows($resFetchsub) > 0) {

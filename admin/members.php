@@ -8,26 +8,6 @@ if (!$con) {
 }
 
 
-if (isset($_GET['search'])) {
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
-    // Escape the search value to prevent SQL injection
-    $search = mysqli_real_escape_string($con, $search);
-
-    // Check if the search value is set
-    if (!empty($search)) {
-        // Query with the search value
-        $sqlFetch = "SELECT * FROM users WHERE name LIKE '%$search%'";
-        $resFetch = mysqli_query($con, $sqlFetch);
-    }
-}
-
-
-$id = "";
-$name = "";
-$email = "";
-$phnumber = "";
-
-
 // for delete content
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
@@ -68,6 +48,23 @@ $offset = ($currentPage - 1) * $recordsPerPage;
 
 $sqlFetch = "SELECT * FROM users  WHERE `restriction` = '0' ORDER BY id DESC LIMIT $offset, $recordsPerPage";
 $resFetch = mysqli_query($con, $sqlFetch);
+
+
+// ================================ for Search ==========================================
+
+if (isset($_GET['search'])) {
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    // Escape the search value to prevent SQL injection
+    $search = mysqli_real_escape_string($con, $search);
+
+    // Check if the search value is set
+    if (!empty($search)) {
+        // Query with the search value
+        $sqlFetch = "SELECT * FROM users WHERE name LIKE '%$search%'";
+        $resFetch = mysqli_query($con, $sqlFetch);
+    }
+}
+
 
 
 ?>

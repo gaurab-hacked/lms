@@ -125,6 +125,7 @@ $sqlFetch = "SELECT * FROM subcategory ORDER BY id DESC LIMIT $offset, $recordsP
 $resFetch = mysqli_query($con, $sqlFetch);
 
 
+
 // ++++++++++++++++Search Logic+++++++++++++++++++
 if (isset($_GET['search'])) {
     $search = isset($_GET['search']) ? $_GET['search'] : '';

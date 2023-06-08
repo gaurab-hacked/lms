@@ -73,19 +73,8 @@ if (isset($_POST['updateContent'])) {
     }
 }
 
-// =======================Search Logic====================
-if (isset($_GET['search'])) {
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
-    // Escape the search value to prevent SQL injection
-    $search = mysqli_real_escape_string($con, $search);
 
-    // Check if the search value is set
-    if (!empty($search)) {
-        // Query with the search value
-        $sqlFetch = "SELECT * FROM category WHERE cname LIKE '%$search%'";
-        $resFetch = mysqli_query($con, $sqlFetch);
-    }
-}
+
 
 // ================================ for pagination (start) ==========================================
 $querytotalnumberROw = "SELECT COUNT(*) as total FROM category";
@@ -105,6 +94,22 @@ $offset = ($currentPage - 1) * $recordsPerPage;
 
 $sqlFetch = "SELECT * FROM category ORDER BY id DESC LIMIT $offset, $recordsPerPage";
 $resFetch = mysqli_query($con, $sqlFetch);
+
+
+// =======================Search Logic====================
+if (isset($_GET['search'])) {
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    // Escape the search value to prevent SQL injection
+    $search = mysqli_real_escape_string($con, $search);
+
+    // Check if the search value is set
+    if (!empty($search)) {
+        // Query with the search value
+        $sqlFetch = "SELECT * FROM category WHERE cname LIKE '%$search%'";
+        $resFetch = mysqli_query($con, $sqlFetch);
+    }
+}
+
 
 ?>
 
